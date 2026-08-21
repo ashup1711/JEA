@@ -1,0 +1,149 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "orchestrator",
+  "subagent_depth": 1,
+  "lsp": true,
+
+  "agent": {
+    "orchestrator": {
+      "description": "Pipeline orchestrator coordinating multi-agent workflows",
+      "mode": "primary",
+      "prompt": "{file:.opencode/agents/orchestrator.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": {
+          "*": "allow"
+        }
+      }
+    },
+    "explore-research": {
+      "description": "Read-only research agent using semantic search and AST tools",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/agents/explore-research.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "grep *": "allow",
+          "rg *": "allow",
+          "find *": "allow",
+          "git log*": "allow",
+          "git diff*": "allow"
+        },
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "prompt-engineer": {
+      "description": "Generates targeted expert and QA prompts from research context",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/agents/prompt-engineer.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "expert-backend": {
+      "description": "Backend implementation expert for Python codebases",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/agents/expert-backend.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "deny",
+          "pytest*": "allow",
+          "python *": "allow",
+          "python3 *": "allow",
+          "ruff*": "allow",
+          "mypy*": "allow",
+          "flake8*": "allow"
+        },
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "expert-frontend": {
+      "description": "Frontend implementation expert",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/agents/expert-frontend.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "deny",
+          "npm test*": "allow",
+          "npm run lint*": "allow",
+          "npm run typecheck*": "allow",
+          "npx tsc*": "allow"
+        },
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "expert-infra": {
+      "description": "Infrastructure and DevOps expert",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/agents/expert-infra.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "deny",
+          "terraform*": "allow",
+          "docker*": "allow",
+          "kubectl*": "allow",
+          "aws *": "allow"
+        },
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "qa": {
+      "description": "QA verification agent with LSP and test verification",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/agents/qa.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "pytest*": "allow",
+          "python *": "allow",
+          "python3 *": "allow",
+          "ruff*": "allow",
+          "mypy*": "allow",
+          "flake8*": "allow",
+          "git diff*": "allow"
+        },
+        "task": {
+          "*": "deny"
+        }
+      }
+    }
+  },
+
+  "mcp": {
+    "semantic-search": {
+      "type": "local",
+      "command": ["uv", "run", "--directory", "mcp-servers/semantic-search", "python3", "server.py"],
+      "enabled": true
+    },
+    "jcodemunch": {
+      "type": "local",
+      "command": ["uvx", "jcodemunch-mcp"],
+      "enabled": true
+    }
+  },
+
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "ask"
+    }
+  }
+}

@@ -1,0 +1,134 @@
+# Job Email Assistant (JEA) Configuration
+# Copy this file to ~/.jea/config.yaml and update the values
+
+email_backend: gmail  # gmail | imap
+
+gmail:
+  credentials_file: credentials.json
+  token_file: token.json
+  scopes:
+    - https://www.googleapis.com/auth/gmail.modify
+  poll_interval_seconds: 60
+  max_results: 50
+
+imap:
+  host: imap.gmail.com
+  port: 993
+  username: your@email.com
+  password: ""  # Use app password for Gmail
+  use_ssl: true
+
+smtp:
+  host: smtp.gmail.com
+  port: 587
+  username: your@email.com
+  password: ""  # Use app password for Gmail
+  use_tls: true
+
+db_path: jea.db
+log_level: INFO
+log_file: jea.log
+config_dir: ~/.jea
+sender_email: "ravalashutosh17@gmail.com"
+
+# Filter rules for matching job-related emails
+filter_rules:
+  - name: interview_emails
+    keywords:
+      - interview
+      - "1:1"
+      - technical round
+      - HR round
+      - phone screen
+      - onsite
+    sender_domains:
+      - greenhouse.io
+      - lever.co
+      - workday.com
+      - google.com
+      - microsoft.com
+      - amazon.com
+    exclude_keywords:
+      - cancelled
+      - canceled
+
+  - name: job_description
+    keywords:
+      - job description
+      - role description
+      - we are hiring
+      - open position
+      - job opportunity
+      - career opportunity
+    sender_domains:
+      - greenhouse.io
+      - lever.co
+      - workday.com
+
+  - name: offers
+    keywords:
+      - offer letter
+      - job offer
+      - compensation package
+      - delighted to offer
+    sender_domains:
+      - google.com
+      - microsoft.com
+      - amazon.com
+      - meta.com
+      - apple.com
+
+  - name: rejections
+    keywords:
+      - not moving forward
+      - other candidates
+      - regret to inform
+      - unfortunately
+    exclude_keywords:
+      - interview  # Avoid false positives
+
+# Reply templates (Jinja2 format)
+reply_templates:
+  - name: interview_acknowledgment
+    subject_template: "Re: {{ subject }}"
+    body_template: |
+      Hi {{ sender_name }},
+
+      Thank you for scheduling the interview. I confirm my availability for {{ interview_datetime }}.
+
+      Looking forward to speaking with you.
+
+      Best regards,
+
+      Ashutosh Raval
+      {{ sender_email }}
+    email_types:
+      - interview_scheduled
+
+  - name: offer_acknowledgment
+    subject_template: "Re: {{ subject }}"
+    body_template: |
+      Hi {{ sender_name }},
+
+      Thank you for the offer. I have received it and will review the details.
+
+      Best regards,
+
+      Ashutosh Raval
+      {{ sender_email }}
+    email_types:
+      - offer
+
+  - name: jd_acknowledgment
+    subject_template: "Re: {{ subject }}"
+    body_template: |
+      Hi {{ sender_name }},
+
+      Thank you for sharing the job description. I have reviewed it and am interested in this opportunity.
+
+      Best regards,
+
+      Ashutosh Raval
+      {{ sender_email }}
+    email_types:
+      - jd_received

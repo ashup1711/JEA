@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jea"
+version = "0.1.0"
+description = "Job Email Assistant - Monitor and manage job-related emails"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "pyyaml>=6.0",
+    "google-api-python-client>=2.0",
+    "google-auth-oauthlib>=1.0",
+    "google-auth-httplib2>=0.2",
+    "imapclient>=2.3",
+    "secure-smtplib>=0.1",
+    "beautifulsoup4>=4.12",
+    "html2text>=2024.2",
+    "rich>=13.0",
+    "jinja2>=3.1",
+    "python-dateutil>=2.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1",
+    "mypy>=1.5",
+]
+
+[project.scripts]
+jea = "jea.cli:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jea"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,8 @@
+[project]
+name = "semantic-search-mcp"
+version = "0.1.0"
+description = "Lightweight code search MCP server"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.10.0,<2.0.0",
+]
